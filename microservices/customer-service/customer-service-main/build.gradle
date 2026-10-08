@@ -1,0 +1,27 @@
+plugins {
+    id 'spring-boot-common-convention'
+}
+
+group = 'co.istad'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':customer-service-domain:customer-domain-core')
+    implementation project(':customer-service-domain:customer-service-application-service')
+    implementation project(':customer-service-resapi')
+    implementation project(':customer-service-persistence')
+    implementation project(':customer-service-message')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+}
+
+test {
+    useJUnitPlatform()
+}

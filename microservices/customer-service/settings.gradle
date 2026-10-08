@@ -1,0 +1,24 @@
+
+pluginManagement {
+    includeBuild('../../build-logic')
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+rootProject.name = 'customer-service'
+
+includeBuild('../../istad-common')
+
+include 'customer-service-domain:customer-domain-core'
+include 'customer-service-domain:customer-service-application-service'
+include 'customer-service-resapi'
+include 'customer-service-persistence'
+include 'customer-service-message'
+include 'customer-service-main'

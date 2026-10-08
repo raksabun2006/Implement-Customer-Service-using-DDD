@@ -1,0 +1,11 @@
+plugins {
+    id 'spring-boot-common-convention'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = false
+}

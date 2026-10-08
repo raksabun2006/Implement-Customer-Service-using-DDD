@@ -1,0 +1,8 @@
+plugins {
+    id 'spring-common-convention'
+}
+
+dependencies {
+    api project(':customer-service-domain:customer-service-application-service')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}

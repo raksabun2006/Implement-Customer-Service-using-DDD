@@ -1,0 +1,40 @@
+plugins {
+    id 'java-library'
+    id 'io.spring.dependency-management'
+}
+group = 'co.istad'
+version = '1.0.0'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:4.1.1'
+    }
+}
+dependencies {
+    // MapStruct core annotations (provides @Mapper)
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Binding between Lombok & MapStruct (required when using both)
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    // MapStruct annotation processor (generates mapper implementations)
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // Spring Core & Context for annotations like @Component, @Repository, @Service
+    api 'org.springframework:spring-context'
+
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
