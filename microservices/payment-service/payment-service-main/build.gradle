@@ -1,0 +1,28 @@
+plugins {
+    id 'spring-boot-common-convention'
+}
+
+group = 'co.istad'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':payment-service-domain:payment-domain-core')
+    implementation project(':payment-service-domain:payment-service-application-service')
+    implementation project(':payment-service-resapi')
+    implementation project(':payment-service-persistence')
+    implementation project(':payment-service-message')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

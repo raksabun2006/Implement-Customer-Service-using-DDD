@@ -1,0 +1,7 @@
+plugins {
+    id 'java-common-convention'
+}
+
+dependencies {
+    api "com.istad.common:istad-common-domain"
+}

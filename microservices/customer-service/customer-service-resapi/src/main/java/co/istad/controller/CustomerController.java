@@ -55,5 +55,4 @@ public class CustomerController {
                 customerWebMapper.toCommand(customerId)
         );
     }
-
 }

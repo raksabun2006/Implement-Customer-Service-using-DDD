@@ -1,0 +1,9 @@
+plugins {
+    id 'spring-common-convention'
+}
+
+dependencies {
+    api project(':business-service-domain:business-domain-core')
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.projectreactor:reactor-core'
+}

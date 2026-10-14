@@ -1,5 +1,19 @@
 server:
   port: 8090
+
 spring:
   application:
     name: customer-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+  mongodb:
+    uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongod:mongod@localhost:2026/customer_db?authSource=admin}
+    representation:
+      uuid: STANDARD
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongod:mongod@localhost:2026/customer_db?authSource=admin}
+      uuid-representation: STANDARD

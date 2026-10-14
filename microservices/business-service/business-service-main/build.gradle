@@ -1,0 +1,29 @@
+plugins {
+    id 'spring-boot-common-convention'
+}
+
+group = 'co.istad'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':business-service-domain:business-domain-core')
+    implementation project(':business-service-domain:business-service-application-service')
+    implementation project(':business-service-resapi')
+    implementation project(':business-service-persistence')
+    implementation project(':business-service-message')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,4 +1,3 @@
-
 pluginManagement {
     includeBuild('../../build-logic')
 
@@ -12,6 +11,13 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-//rootProject.name = 'istad-common'
-//include 'istad-common-domain'
-//include 'istad-common-restapi'
+rootProject.name = 'business-service'
+
+includeBuild('../../istad-common')
+
+include 'business-service-domain:business-domain-core'
+include 'business-service-domain:business-service-application-service'
+include 'business-service-resapi'
+include 'business-service-persistence'
+include 'business-service-message'
+include 'business-service-main'

@@ -1,11 +1,11 @@
 package co.istad.adapter;
 
 import co.istad.CustomerId;
+import co.istad.document.CustomerDocument;
 import co.istad.entity.Customer;
-import co.istad.entity.CustomerEntity;
 import co.istad.mapper.CustomerPersistenceMapper;
 import co.istad.port.out.CustomerRepository;
-import co.istad.repository.CustomerJpaRepository;
+import co.istad.repository.CustomerMongoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,19 +16,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CustomerRepositoryAdapter implements CustomerRepository {
 
-    private final CustomerJpaRepository customerJpaRepository;
+    private final CustomerMongoRepository customerMongoRepository;
     private final CustomerPersistenceMapper customerPersistenceMapper;
 
     @Override
     public Customer save(Customer customer) {
-
-        CustomerEntity entity =
-                customerPersistenceMapper.toEntity(customer);
-
-        CustomerEntity savedEntity =
-                customerJpaRepository.save(entity);
-
-        return customerPersistenceMapper.toDomain(savedEntity);
+        CustomerDocument document = customerPersistenceMapper.toDocument(customer);
+        CustomerDocument savedDocument = customerMongoRepository.save(document);
+        return customerPersistenceMapper.toDomain(savedDocument);
     }
 
     @Override
@@ -44,7 +39,7 @@ public class CustomerRepositoryAdapter implements CustomerRepository {
         if (customerId == null) {
             return Optional.empty();
         }
-        return customerJpaRepository.findById(customerId)
+        return customerMongoRepository.findById(customerId)
                 .map(customerPersistenceMapper::toDomain);
     }
 }

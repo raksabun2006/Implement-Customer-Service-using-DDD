@@ -1,0 +1,8 @@
+plugins {
+    id 'spring-common-convention'
+}
+
+dependencies {
+    api project(':payment-service-domain:payment-domain-core')
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}

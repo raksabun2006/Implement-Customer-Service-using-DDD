@@ -1,0 +1,28 @@
+plugins {
+    id 'spring-boot-common-convention'
+}
+
+group = 'co.istad'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':order-service-domain:order-domain-core')
+    implementation project(':order-service-domain:order-service-application-service')
+    implementation project(':order-service-resapi')
+    implementation project(':order-service-persistence')
+    implementation project(':order-service-message')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}

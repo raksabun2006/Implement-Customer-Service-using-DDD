@@ -1,0 +1,8 @@
+plugins {
+    id 'spring-common-convention'
+}
+
+dependencies {
+    api project(':business-service-domain:business-service-application-service')
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+}

@@ -1,0 +1,23 @@
+pluginManagement {
+    includeBuild('../../build-logic')
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+rootProject.name = 'order-service'
+
+includeBuild('../../istad-common')
+
+include 'order-service-domain:order-domain-core'
+include 'order-service-domain:order-service-application-service'
+include 'order-service-resapi'
+include 'order-service-persistence'
+include 'order-service-message'
+include 'order-service-main'
