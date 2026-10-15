@@ -17,6 +17,6 @@ public record ProductRequest(
         @Positive(message = "Product price must be positive")
         BigDecimal price,
 
-        boolean available
+        Boolean available
 ) {
 }

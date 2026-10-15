@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Business extends AggregateRoot<BusinessId> {
     private String name;
     private BusinessContact contact;
-    private boolean active;
+    private Boolean active;
     private List<Product> products;
     private OrderApproval orderApproval;
     private OrderDetail orderDetail;
