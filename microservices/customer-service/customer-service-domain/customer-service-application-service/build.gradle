@@ -3,6 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     api project(':customer-service-domain:customer-domain-core')
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.projectreactor:reactor-core'
+
+    testImplementation 'io.projectreactor:reactor-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

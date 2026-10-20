@@ -4,12 +4,14 @@ import co.istad.order.domain.exception.OrderDomainException;
 import co.istad.order.domain.exception.OrderNotFoundException;
 import co.istad.order.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -43,12 +45,12 @@ public class OrderGlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(WebExchangeBindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(MethodArgumentNotValidException exception) {
-        log.error("Validation error: {}", exception.getMessage());
+    public ErrorResponse handleValidationException(WebExchangeBindException exception) {
+        log.error("Validation error in WebFlux request: {}", exception.getMessage());
         List<String> errors = exception.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
         return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
@@ -58,10 +60,22 @@ public class OrderGlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException exception) {
+        log.warn("Response status exception: {}", exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(
+                exception.getStatusCode().value(),
+                exception.getReason() != null ? exception.getReason() : exception.getMessage(),
+                List.of(exception.getMessage()),
+                ZonedDateTime.now(ZoneId.of("UTC"))
+        );
+        return ResponseEntity.status(exception.getStatusCode()).body(errorResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGenericException(Exception exception) {
-        log.error("Unexpected error occurred: {}", exception.getMessage(), exception);
+        log.error("Unexpected error occurred in Order Service: {}", exception.getMessage(), exception);
         return new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred",

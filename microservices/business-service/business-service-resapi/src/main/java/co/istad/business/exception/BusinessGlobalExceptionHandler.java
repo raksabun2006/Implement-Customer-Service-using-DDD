@@ -1,10 +1,12 @@
 package co.istad.business.exception;
 
+import co.istad.business.domain.exception.BusinessAlreadyExistsException;
 import co.istad.business.domain.exception.BusinessDomainException;
 import co.istad.business.domain.exception.BusinessNotFoundException;
 import co.istad.business.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,6 +20,30 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class BusinessGlobalExceptionHandler {
+
+    @ExceptionHandler(BusinessAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleBusinessAlreadyExistsException(BusinessAlreadyExistsException exception) {
+        log.error("BusinessAlreadyExistsException occurred: {}", exception.getMessage(), exception);
+        return new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                exception.getMessage(),
+                List.of(exception.getMessage()),
+                ZonedDateTime.now(ZoneId.of("UTC"))
+        );
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateKeyException(DuplicateKeyException exception) {
+        log.error("DuplicateKeyException occurred: {}", exception.getMessage(), exception);
+        return new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Duplicate business record already exists",
+                List.of(exception.getMessage() != null ? exception.getMessage() : "Duplicate key error"),
+                ZonedDateTime.now(ZoneId.of("UTC"))
+        );
+    }
 
     @ExceptionHandler(BusinessDomainException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

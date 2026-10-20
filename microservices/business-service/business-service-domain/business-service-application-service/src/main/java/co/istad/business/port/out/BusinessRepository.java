@@ -16,4 +16,8 @@ public interface BusinessRepository {
     Mono<Business> findById(UUID businessId);
 
     Flux<Business> findAll();
+
+    Mono<Boolean> existsByName(String name);
+
+    Mono<Business> findByName(String name);
 }

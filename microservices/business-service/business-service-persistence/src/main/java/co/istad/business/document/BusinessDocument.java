@@ -2,6 +2,7 @@ package co.istad.business.document;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -18,7 +19,10 @@ public class BusinessDocument {
 
     @Id
     private UUID id;
+
+    @Indexed(unique = true)
     private String name;
+
     private BusinessContactDocument contact;
     private boolean active;
     @Builder.Default

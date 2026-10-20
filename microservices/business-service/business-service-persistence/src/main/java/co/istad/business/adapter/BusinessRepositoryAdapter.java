@@ -59,4 +59,23 @@ public class BusinessRepositoryAdapter implements BusinessRepository {
         return reactiveMongoRepository.findAll()
                 .map(businessPersistenceMapper::toDomain);
     }
+
+    @Override
+    public Mono<Boolean> existsByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return Mono.just(false);
+        }
+        log.info("Checking if business exists reactively by name: {}", name);
+        return reactiveMongoRepository.existsByName(name);
+    }
+
+    @Override
+    public Mono<Business> findByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return Mono.empty();
+        }
+        log.info("Finding business reactively by name: {}", name);
+        return reactiveMongoRepository.findByName(name)
+                .map(businessPersistenceMapper::toDomain);
+    }
 }

@@ -2,9 +2,10 @@ package co.istad.usecase;
 
 import co.istad.dto.UpdateCustomerCommand;
 import co.istad.dto.UpdateCustomerResult;
+import reactor.core.publisher.Mono;
 
 public interface UpdateCustomerUseCase {
 
-    UpdateCustomerResult execute(UpdateCustomerCommand command);
+    Mono<UpdateCustomerResult> execute(UpdateCustomerCommand command);
 
 }

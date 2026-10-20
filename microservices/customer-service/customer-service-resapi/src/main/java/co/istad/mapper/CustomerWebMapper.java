@@ -19,8 +19,17 @@ public interface CustomerWebMapper {
 
     CustomerUpdateResponse toResponse(UpdateCustomerResult result);
 
+    CustomerResponse toResponse(CustomerResult result);
+
     default DeactivateCustomerCommand toCommand(UUID customerId) {
         return new DeactivateCustomerCommand(customerId);
     }
 
+    default DeleteCustomerCommand toDeleteCommand(UUID customerId) {
+        return new DeleteCustomerCommand(customerId);
+    }
+
+    CustomerReportResponse toResponse(CustomerReportResult result);
+
+    CustomerStatisticResponse toResponse(CustomerStatisticResult result);
 }

@@ -1,6 +1,6 @@
 package co.istad.dto;
 
-
+import co.istad.valueObject.CustomerSegment;
 import jakarta.validation.constraints.*;
 
 public record InitiateCustomerCommand(
@@ -23,6 +23,11 @@ public record InitiateCustomerCommand(
                 regexp = "^\\+?[0-9]{8,15}$",
                 message = "Phone number must be valid"
         )
-        String phoneNumber
+        String phoneNumber,
+
+        CustomerSegment segment
 ) {
+    public InitiateCustomerCommand(String username, String familyName, String givenName, String email, String phoneNumber) {
+        this(username, familyName, givenName, email, phoneNumber, null);
+    }
 }

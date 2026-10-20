@@ -17,3 +17,4 @@ spring:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongod:mongod@localhost:2026/customer_db?authSource=admin}
       uuid-representation: STANDARD
+      auto-index-creation: true

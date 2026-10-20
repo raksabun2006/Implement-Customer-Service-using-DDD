@@ -1,5 +1,6 @@
 package co.istad.dto;
 
+import co.istad.valueObject.CustomerSegment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,6 +14,11 @@ public record UpdateCustomerCommand(
         String familyName,
 
         @NotBlank(message = "Given name is required")
-        String givenName
+        String givenName,
+
+        CustomerSegment segment
 ) {
+    public UpdateCustomerCommand(UUID customerId, String familyName, String givenName) {
+        this(customerId, familyName, givenName, null);
+    }
 }

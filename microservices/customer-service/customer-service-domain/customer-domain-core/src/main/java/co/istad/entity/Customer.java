@@ -2,10 +2,12 @@ package co.istad.entity;
 
 import co.istad.CustomerId;
 import co.istad.exception.CustomerDomainException;
+import co.istad.valueObject.CustomerSegment;
+import co.istad.valueObject.CustomerStatus;
 import co.istad.valueObject.Email;
 import co.istad.valueObject.PhoneNumber;
-import co.istad.valueObject.CustomerStatus;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class Customer extends AggregateRoot<CustomerId> {
@@ -15,12 +17,20 @@ public class Customer extends AggregateRoot<CustomerId> {
     private final Email email;
     private final PhoneNumber phoneNumber;
     private CustomerStatus status;
+    private CustomerSegment segment;
+    private Instant createdAt;
 
     // Domain Critical Logic
     public void initiateCustomer() {
         validateCustomer();
         super.setId(new CustomerId(UUID.randomUUID()));
-        status = CustomerStatus.ACTIVE;
+        this.status = CustomerStatus.ACTIVE;
+        if (this.segment == null) {
+            this.segment = CustomerSegment.SILVER;
+        }
+        if (this.createdAt == null) {
+            this.createdAt = Instant.now();
+        }
     }
 
     private void validateCustomer() {
@@ -40,6 +50,20 @@ public class Customer extends AggregateRoot<CustomerId> {
         this.givenName = givenName;
     }
 
+    public void updateCustomer(String familyName, String givenName, CustomerSegment segment) {
+        updateCustomer(familyName, givenName);
+        if (segment != null) {
+            this.segment = segment;
+        }
+    }
+
+    public void assignSegment(CustomerSegment segment) {
+        if (segment == null) {
+            throw new CustomerDomainException("Customer segment cannot be null");
+        }
+        this.segment = segment;
+    }
+
     public void deactivateCustomer() {
         if (status != CustomerStatus.ACTIVE) {
             throw new CustomerDomainException("Could not deactivate because customer status is not active");
@@ -47,6 +71,12 @@ public class Customer extends AggregateRoot<CustomerId> {
         status = CustomerStatus.INACTIVE;
     }
 
+    public void activateCustomer() {
+        if (status == CustomerStatus.ACTIVE) {
+            throw new CustomerDomainException("Customer is already active");
+        }
+        status = CustomerStatus.ACTIVE;
+    }
 
     public String getUsername() {
         return username;
@@ -72,6 +102,14 @@ public class Customer extends AggregateRoot<CustomerId> {
         return status;
     }
 
+    public CustomerSegment getSegment() {
+        return segment;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
     private Customer(Builder builder) {
         super.setId(builder.id);
         username = builder.username;
@@ -80,12 +118,13 @@ public class Customer extends AggregateRoot<CustomerId> {
         email = builder.email;
         phoneNumber = builder.phoneNumber;
         status = builder.status;
+        segment = builder.segment;
+        createdAt = builder.createdAt;
     }
 
     public static Builder builder() {
         return new Builder();
     }
-
 
     public static final class Builder {
         private CustomerId id;
@@ -95,6 +134,8 @@ public class Customer extends AggregateRoot<CustomerId> {
         private Email email;
         private PhoneNumber phoneNumber;
         private CustomerStatus status;
+        private CustomerSegment segment;
+        private Instant createdAt;
 
         private Builder() {
         }
@@ -131,6 +172,16 @@ public class Customer extends AggregateRoot<CustomerId> {
 
         public Builder status(CustomerStatus val) {
             status = val;
+            return this;
+        }
+
+        public Builder segment(CustomerSegment val) {
+            segment = val;
+            return this;
+        }
+
+        public Builder createdAt(Instant val) {
+            createdAt = val;
             return this;
         }
 

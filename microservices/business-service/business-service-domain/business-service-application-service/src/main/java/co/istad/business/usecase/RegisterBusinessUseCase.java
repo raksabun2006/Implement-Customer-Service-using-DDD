@@ -4,6 +4,7 @@ import co.istad.Money;
 import co.istad.business.domain.entity.Business;
 import co.istad.business.domain.entity.Product;
 import co.istad.business.domain.event.BusinessRegisteredEvent;
+import co.istad.business.domain.exception.BusinessAlreadyExistsException;
 import co.istad.business.domain.service.BusinessDomainService;
 import co.istad.business.domain.valueobject.BusinessContact;
 import co.istad.business.domain.valueobject.ProductId;
@@ -31,16 +32,24 @@ public class RegisterBusinessUseCase {
     public Mono<RegisterBusinessResult> execute(RegisterBusinessCommand command) {
         log.info("Executing business registration for: {}", command.name());
 
-        return Mono.fromCallable(() -> {
-            Business business = toBusinessDomain(command);
-            BusinessRegisteredEvent event = businessDomainService.validateAndInitiateBusiness(business);
-            log.info("Business registered event initiated at: {}", event.getCreatedAt());
-            return business;
-        })
-        .flatMap(businessRepository::save)
-        .map(this::toRegisterBusinessResult)
-        .doOnSuccess(result -> log.info("Business registered successfully with id: {}", result.businessId()))
-        .doOnError(error -> log.error("Failed to register business: {}", error.getMessage(), error));
+        return businessRepository.existsByName(command.name())
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        log.warn("Business with name '{}' already exists", command.name());
+                        return Mono.error(new BusinessAlreadyExistsException(
+                                "Business with name '" + command.name() + "' already exists!"
+                        ));
+                    }
+                    return Mono.fromCallable(() -> {
+                        Business business = toBusinessDomain(command);
+                        BusinessRegisteredEvent event = businessDomainService.validateAndInitiateBusiness(business);
+                        log.info("Business registered event initiated at: {}", event.getCreatedAt());
+                        return business;
+                    }).flatMap(businessRepository::save);
+                })
+                .map(this::toRegisterBusinessResult)
+                .doOnSuccess(result -> log.info("Business registered successfully with id: {}", result.businessId()))
+                .doOnError(error -> log.error("Failed to register business: {}", error.getMessage(), error));
     }
 
     private Business toBusinessDomain(RegisterBusinessCommand command) {

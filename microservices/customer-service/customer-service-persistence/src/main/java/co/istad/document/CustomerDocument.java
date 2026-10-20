@@ -8,13 +8,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.Instant;
 import java.util.UUID;
 
-@Document(collection = "customers")
+@Document(collection = "customerDocument")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,4 +39,19 @@ public class CustomerDocument {
     private PhoneNumber phoneNumber;
 
     private CustomerStatus status;
+
+    @DocumentReference
+    private CustomerSegmentDocument segment;
+
+    @CreatedBy
+    private Instant createBy;
+
+    @CreatedDate
+    private Instant createdAt;
+
+    @LastModifiedBy
+    private Instant modifiedBy;
+
+    @LastModifiedDate
+    private Instant modifiedAt;
 }
