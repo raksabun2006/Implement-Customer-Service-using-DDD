@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.*;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -16,13 +17,13 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import java.time.Instant;
 import java.util.UUID;
 
-@Document(collection = "customerDocument")
+@Document(collection = "customers")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomerDocument {
+public class CustomerDocument implements Persistable<UUID> {
 
     @Id
     private UUID customerId;
@@ -44,14 +45,24 @@ public class CustomerDocument {
     private CustomerSegmentDocument segment;
 
     @CreatedBy
-    private Instant createBy;
+    private String createBy;
 
     @CreatedDate
     private Instant createdAt;
 
     @LastModifiedBy
-    private Instant modifiedBy;
+    private String modifiedBy;
 
     @LastModifiedDate
     private Instant modifiedAt;
+
+    @Override
+    public UUID getId() {
+        return customerId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return createdAt == null;
+    }
 }
