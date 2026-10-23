@@ -20,6 +20,7 @@ public class Order extends AggregateRoot<OrderId> {
     private TrackingId trackingId;
     private OrderStatus orderStatus;
     private List<String> failureMessages;
+    private Long version ;
 
     public void validateOrder() {
         validateInitialOrder();
@@ -66,10 +67,13 @@ public class Order extends AggregateRoot<OrderId> {
 
     private void updateFailureMessages(List<String> failureMessages) {
         if (this.failureMessages != null && failureMessages != null) {
-            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
+            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message
+                    .isEmpty())
+                    .toList());
         }
         if (this.failureMessages == null) {
-            this.failureMessages = failureMessages != null ? new ArrayList<>(failureMessages) : new ArrayList<>();
+            this.failureMessages = failureMessages != null ?
+                    new ArrayList<>(failureMessages) : new ArrayList<>();
         }
     }
 

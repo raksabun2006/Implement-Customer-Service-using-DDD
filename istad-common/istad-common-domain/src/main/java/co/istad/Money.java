@@ -11,7 +11,7 @@ public record Money(
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 
     public boolean isGreaterThanZero() {
-        return amount != null && amount.compareTo(BigDecimal.ZERO) > 0;
+        return this.amount != null && amount.compareTo(BigDecimal.ZERO) > 0;
     }
 
     public boolean isGreaterThan(Money money) {
@@ -29,6 +29,7 @@ public record Money(
     public Money multiply(int factor) {
         return new Money(setScale(this.amount.multiply(new BigDecimal(factor))));
     }
+
 
     public void isGraderThanZero() {
         if (amount != null && amount.compareTo(BigDecimal.ZERO) > 0) {

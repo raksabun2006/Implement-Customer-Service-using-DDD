@@ -18,3 +18,20 @@ spring:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongod:mongod@localhost:2026/customer_db?authSource=admin}
       uuid-representation: STANDARD
       auto-index-creation: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}:${random.value}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized

@@ -4,33 +4,56 @@ import co.istad.order.dto.CreateOrderRequest;
 import co.istad.order.dto.CreateOrderResponse;
 import co.istad.order.dto.TrackOrderResponse;
 import co.istad.order.mapper.OrderWebMapper;
+import co.istad.order.port.out.BusinessClientPort;
 import co.istad.order.usecase.CreateOrderUseCase;
 import co.istad.order.usecase.TrackOrderUseCase;
 import co.istad.order.dto.track.TrackOrderQuery;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class OrderController {
 
     private final CreateOrderUseCase createOrderUseCase;
     private final TrackOrderUseCase trackOrderUseCase;
     private final OrderWebMapper orderWebMapper;
+
+    @Autowired(required = false)
+    private BusinessClientPort businessClientPort;
+
     @GetMapping("/flux")
     public Mono<String> flux() {
         log.info("Received request: GET /flux");
         return Mono.just("Hello from WebFlux");
     }
+
+    @GetMapping("/lb-demo")
+    public Mono<Map<String, Object>> loadBalancerDemo() {
+        log.info("Received request: GET /api/orders/lb-demo");
+        return Mono.fromCallable(() -> {
+            if (businessClientPort != null) {
+                return businessClientPort.getRespondingInstance()
+                        .map(res -> Map.of("caller", (Object) "order-service", "businessResponse", res, "loadBalanced", true))
+                        .orElse(Map.of("caller", "order-service", "businessResponse", "No response from business-service", "loadBalanced", false));
+            }
+            return Map.of("caller", (Object) "order-service", "message", (Object) "BusinessClientPort not available");
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {

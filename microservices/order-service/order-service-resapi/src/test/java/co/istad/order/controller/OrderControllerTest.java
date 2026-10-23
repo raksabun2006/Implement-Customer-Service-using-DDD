@@ -45,9 +45,8 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        OrderController orderController = new OrderController(createOrderUseCase, trackOrderUseCase, orderWebMapper);
-        OrderFluxTestController fluxController = new OrderFluxTestController();
-        webTestClient = WebTestClient.bindToController(orderController, fluxController)
+        OrderController orderController = new OrderController(createOrderUseCase, trackOrderUseCase, orderWebMapper, null);
+        webTestClient = WebTestClient.bindToController(orderController)
                 .controllerAdvice(new OrderGlobalExceptionHandler())
                 .build();
     }
@@ -123,11 +122,10 @@ class OrderControllerTest {
     @Test
     void shouldReturnFluxEndpointSuccessfully() {
         webTestClient.get()
-                .uri("/flux")
+                .uri("/api/orders/flux")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$[0].status").isEqualTo("UP");
+                .expectBody(String.class).isEqualTo("Hello from WebFlux");
     }
 
     @Test
